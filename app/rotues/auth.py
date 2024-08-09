@@ -49,7 +49,7 @@ def register():
   if User.query.filter_by(email = email).first():
     return jsonify({'message': 'User already exists'}), 400
 
-  hashed_password = generate_password_hash(password)
+  hashed_password = generate_password_hash(password).decode('utf-8')
   user = User(fullname = fullname, email = email, password = hashed_password)
   db.session.add(user)
   db.session.commit()

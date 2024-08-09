@@ -10,11 +10,9 @@ class ResetPasswordForm(FlaskForm):
       validators=[ 
         DataRequired(),
 
-        '''
-          Regexp(
-          "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d){8,32}$"
-          )
-        '''
+        
+          Regexp("^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,30}$")
+       
         
        ]
     )

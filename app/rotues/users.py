@@ -52,7 +52,7 @@ def reset_password(token):
    
    form= ResetPasswordForm()
    if form.validate_on_submit():
-      hashed_password=bcrypt.generate_password_hash(form.password.data).decode("utf-8")
+      hashed_password=bcrypt.generate_password_hash(form.password.data)
       user.password= hashed_password
       db.session.commit()
       flash(message="your Password has been updated successfully",category="success")

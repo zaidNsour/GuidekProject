@@ -9,9 +9,13 @@ class ResetPasswordForm(FlaskForm):
       "password",
       validators=[ 
         DataRequired(),
-        Regexp(
+
+        '''
+          Regexp(
           "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d){8,32}$"
           )
+        '''
+        
        ]
     )
   confirm_password=PasswordField("Confirm Password", validators=[DataRequired(), EqualTo("password")] )

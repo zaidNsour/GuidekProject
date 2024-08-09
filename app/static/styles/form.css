@@ -1,0 +1,238 @@
+
+:root{
+  --main-color:#744f98;
+  --secondary-color:#15c8cc;
+  --main-transition:0.3s;
+  --para-color1:#666;
+  --border-color1:#e9e6e6;
+  --section-background: #ececec;
+  --section-padding:100px; 
+}
+
+
+
+.container{
+  padding-left:15px;
+  padding-right:15px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+
+.navbar{
+  background-color: black;
+}
+
+span.error{
+  
+  color:red;
+}
+
+.user-img{
+  
+  width:150px;
+  margin:10px;
+}
+
+.btn-submit{
+  background-color: var(--secondary-color);
+  border-radius:3px;
+  width:120px;
+  height:50px;
+  color:white;
+}
+
+.btn-submit2{
+  background-color: var(--secondary-color);
+  border-radius:3px;
+  width:150px;
+  height:50px;
+  color:white;
+}
+
+
+/* ***  */
+
+.lesson {
+    box-shadow: 0 5px 15px rgba(200 200 200/ 15);
+    border-radius: 5px;
+    border: 1px solid #fff;
+
+}
+
+.post:hover {
+    /* transform: scale(1.1); */
+    opacity: 0.9;
+}
+
+.button_width {
+    min-width: 120px;
+    max-width: 120px;
+}
+
+.article-img {
+    height: 65px;
+    width: 65px;
+    margin-right: 8px;
+}
+
+.user-img {
+    height: 150px;
+    width: 150px;
+    margin-right: 8px;
+}
+
+.link {
+    text-decoration: none;
+}
+
+.nobull {
+    list-style-type: none;
+}
+
+.arabic-sc {
+    font-family: 'Rakkas', cursive;
+}
+
+.content-section {
+    background: #ffffff;
+    padding: 10px 20px;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    margin-bottom: 20px;
+}
+
+
+/*Stars*/
+.star1{
+  width:20%;
+}
+.star2{
+  width:40%;
+}
+.star3{
+  width:60%;
+}
+.star4{
+  width:80%;
+}
+.star5{
+  width:100%;
+}
+/*Stars*/
+
+
+/* edit-course */
+.curriculum-container {
+  min-height: 400px; /* Set your desired minimum height here */
+  position:relative;
+  margin-top: 40px;
+}
+
+.unit {
+  border-color: #dee2e6;
+}
+
+.unit-header {
+  background-color: #f8f9fa;
+}
+
+.unit-button {
+  background-color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.unit-button:hover {
+  background-color: #e9ecef;
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+}
+
+.action-buttons .btn {
+  transition: background-color 0.3s ease;
+}
+
+.action-buttons .btn:hover {
+  opacity: 0.8;
+}
+
+.lesson {
+  border-color: #dee2e6;
+}
+
+.lesson-title {
+  font-weight: 500;
+}
+
+.lesson-actions {
+  display: flex;
+  align-items: center;
+}
+
+
+.btn-a {
+  background-color: var(--secondary-color);
+  border-radius: 3px;
+  border: 2px solid black;
+  width: 120px;
+  height: 50px;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 1rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+
+.ul-buttons{
+  padding:30px;
+}
+
+.re-order-list{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.re-order{
+  position: relative;
+  width:40px;
+  height: 5px;
+  background-color: black;
+  border-radius: 10px;
+}
+.re-order::before{
+  content: "";
+  position: absolute;
+  top:-10px;
+  width:40px;
+  height: 5px;
+  background-color: black;
+  border-radius: 10px;
+}
+.re-order::after{
+  content: "";
+  position: absolute;
+  bottom:-10px;
+  width:40px;
+  height: 5px;
+  background-color: black;
+  border-radius: 10px;
+}
+
+
+
+
+
+
+
+
+/* edit-course */

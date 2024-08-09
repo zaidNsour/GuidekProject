@@ -7,7 +7,7 @@ class Config:
     JWT_SECRET_KEY = os.environ.get('SECRET_KEY')
     # dont forget to modify that for security concern
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours = 6)
-    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(hours = 12)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER='smtp.googlemail.com'
     MAIL_PORT = 587

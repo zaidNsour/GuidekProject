@@ -1,16 +1,20 @@
 import os
 from flask import Blueprint, request, jsonify
 from app import db, mail
-from app.models import User
+from app.models import User, TokenBlocklist
 from flask_mail import Message
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.validators import validate_email, validate_password, validate_fullname
+from datetime import datetime
 
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, get_jwt
 
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+
+
+############################ functions
 
 def send_verification_email(email, code):
   msg = Message('Your verification code', sender= os.environ.get('EMAIL_USER'), recipients=[email])
@@ -18,13 +22,7 @@ def send_verification_email(email, code):
   mail.send(msg)
 
 
-@auth_bp.route('/refresh', methods=['POST'])
-@jwt_required(refresh=True)
-def refresh():
-  email = get_jwt_identity()
-  new_access_token = create_access_token(identity = email)
-  return jsonify(access_token=new_access_token), 200
-
+############################ 
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -81,7 +79,31 @@ def login():
     return jsonify(access_token = access_token, refresh_token = refresh_token), 200
   else:
     return jsonify({'message': 'Invalid email or password'}), 400
-    
+  
+
+@auth_bp.route('/logout', methods=['GET'])
+@jwt_required(verify_type = False) 
+def logout():
+  jwt = get_jwt()
+  jti = jwt['jti']
+  token_type = jwt['type']
+  expires_in = jwt['exp'] - datetime.now().timestamp()
+
+  token_blocked = TokenBlocklist(jti = jti, expires_in = expires_in)
+  db.session.add(token_blocked)
+  db.session.commit()
+
+  return jsonify({'message': f'{token_type} token is revoked successfully.'}), 200
+
+
+@auth_bp.route('/refresh', methods=['POST'])
+@jwt_required(refresh = True)
+def refresh():
+  email = get_jwt_identity()
+  new_access_token = create_access_token(identity = email)
+  return jsonify(access_token=new_access_token), 200
+
+  
 
 # if you want to add email verification endpoint
 '''

@@ -1,5 +1,24 @@
+from flask import current_app
+from itsdangerous import Serializer
 from . import db
 from datetime import datetime
+from datetime import timedelta
+from sqlalchemy.sql import func
+
+
+class TokenBlocklist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(36), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=func.now())
+    expires_at = db.Column(db.DateTime, nullable=False)
+
+    def __repr__(self):
+        return f'Token<{self.jti}>'
+    
+    def __init__(self, jti, expires_in):
+        self.jti = jti
+        self.created_at = datetime.now()
+        self.expires_at = self.created_at + timedelta(seconds=expires_in)
 
 
 class User(db.Model):
@@ -9,7 +28,7 @@ class User(db.Model):
   email = db.Column(db.String(120), unique=True, nullable=False)
   password = db.Column(db.String(60), nullable=False)
   verified = db.Column(db.Boolean, nullable=False, default=False)
-  is_admin = db.Column(db.Boolean, nullable=False, default=False)
+  is_admin = db.Column(db.Boolean, nullable=False, default=True)
 
   #optional attributes
   verification_code = db.Column(db.Integer, nullable=True)
@@ -32,6 +51,19 @@ class User(db.Model):
       "phone": self.phone,
       "img_url": self.img_url,
   		}
+  
+  def get_reset_token(self):
+        s = Serializer(current_app.config['SECRET_KEY'], salt='pw-reset')
+        return s.dumps({'user_id': self.id})
+
+  @staticmethod
+  def verify_reset_token(token, age=3600):
+    s = Serializer(current_app.config['SECRET_KEY'], salt='pw-reset')
+    try:
+      user_id = s.loads(token, max_age=age)['user_id']
+    except:
+      return None
+    return User.query.get(user_id)
   
 
 class Announcement(db.Model):

@@ -14,11 +14,13 @@ def validate_password(password):
     return True, ""
 
 def validate_fullname(fullname):
-    return len(fullname) > 3
+    return len(fullname) >= 3
 
+def validate_phone(fullname):
+    return len(fullname) >= 10
 
 def validate_announ_title(title):
-    return len(title) > 10
+    return len(title) >= 6
 
 def validate_announ_content(content):
-    return len(content) > 30
+    return len(content) >= 10

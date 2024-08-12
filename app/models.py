@@ -29,12 +29,13 @@ class TokenBlocklist(db.Model):
 
 class User(db.Model,UserMixin):
   id = db.Column(db.Integer, primary_key=True)
+  major_id = db.Column(db.Integer, db.ForeignKey("major.id"), nullable=True) 
 
   fullname = db.Column(db.String(80), nullable=False)
   email = db.Column(db.String(120), unique=True, nullable=False)
   password = db.Column(db.String(60), nullable=False)
   verified = db.Column(db.Boolean, nullable=False, default=False)
-  is_admin = db.Column(db.Boolean, nullable=False, default=False)
+  is_admin = db.Column(db.Boolean, nullable=False, default=True)
 
   #optional attributes
   verification_code = db.Column(db.Integer, nullable=True)
@@ -49,6 +50,7 @@ class User(db.Model,UserMixin):
   def to_dict(self):
     return {
       "id": self.id,
+      "major":self.major,
       "fullname": self.fullname,
       "email": self.email,
       "verified": self.verified,
@@ -58,9 +60,9 @@ class User(db.Model,UserMixin):
       "img_url": self.img_url,
   		}
   
-  def get_reset_token(self):
-        s = Serializer(current_app.config['SECRET_KEY'], salt='pw-reset')
-        return s.dumps({'user_id': self.id})
+  def get_reset_token(self, expires_sec=1800):
+        s = Serializer(current_app.config['SECRET_KEY'], salt='pw-reset', expires_in=expires_sec)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
 
   @staticmethod
   def verify_reset_token(token, age=3600):
@@ -91,18 +93,66 @@ class Announcement(db.Model):
 
 class Subject(db.Model):
   id = db.Column(db.Integer, primary_key=True)
+  college_id = db.Column(db.Integer, db.ForeignKey("college.id"), nullable=False)
+
   name = db.Column(db.String(120), nullable=False)
-  num_of_hours = db.Column(db.Integer, primary_key=False)
+  num_of_hours = db.Column(db.Integer)
   def to_dict(self):
     return {"name": self.name,"num_of_hours": self.num_of_hours}   
      
   def __repr__(self):
-    return f' User({self.name})' 
-      
-	
-class Collage(db.Model):
-	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(120), nullable=False)
+    return f' Subject({self.name})' 
+  
+
+class Major(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  college_id = db.Column(db.Integer, db.ForeignKey("college.id"), nullable=False) 
+
+
+  name = db.Column(db.String(60), nullable=False)
+  students = db.relationship('User', backref=db.backref('major', lazy=True))
+
+class MajorSubject(db.Model):
+    
+    major_id = db.Column(db.Integer, db.ForeignKey('major.id'), primary_key=True)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), primary_key=True)
+    type = db.Column(db.String(50), nullable=False)
+
+ 
+    major = db.relationship('Major', backref=db.backref('major_subjects', cascade="all, delete-orphan"))
+    subject = db.relationship('Subject', backref=db.backref('major_subjects', cascade="all, delete-orphan"))
+
+    def __repr__(self):
+        return f'<MajorSubject {self.major_id}, {self.subject_id}, type = {self.type}>'
+    
+
+class Room(db.Model):
+   id = db.Column(db.Integer, primary_key=True)
+   name = db.Column(db.String(30), nullable=False)
+   college_id = db.Column(db.Integer, db.ForeignKey("college.id"), nullable=False) 
+   direction = db.Column(db.String(120), nullable=False)
+   
+
+class College(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String(80), nullable=False)
+  location = db.Column(db.String(120), nullable=False)
+
+  majors = db.relationship('Major', backref=db.backref('college', lazy=True))
+  subjects = db.relationship('Subject', backref=db.backref('college', lazy=True))
+  rooms = db.relationship('Room', backref=db.backref('college', lazy=True))
+
+
+class QA(db.Model):
+   id = db.Column(db.Integer, primary_key=True)
+   question = db.Column(db.String(120), nullable=False)
+   answer = db.Column(db.String(120), nullable=False)
+
+
+
+
+
+   
     
         
   

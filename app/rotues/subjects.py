@@ -7,6 +7,28 @@ from app.decorators import admin_required
 
 subject_bp = Blueprint('subjects', __name__, url_prefix='/subjects')
 
+
+@subject_bp.route('/add_subjects', methods = ['POST'])
+@admin_required
+@jwt_required() 
+def add_subjects():
+ data = request.get_json()
+ for subject in data:
+  name = subject.get('name')
+  num_of_hours = subject.get('num_of_hours')
+  college_id = subject.get('college_id')
+  if not name:
+     return jsonify({'message': 'Missing subject name'}), 400
+
+  subject = Subject(name = name, num_of_hours = num_of_hours, college_id = college_id )
+  db.session.add(subject)
+ db.session.commit()
+
+ return jsonify({"message": "Subject added successfully"}), 201
+
+
+
+
 @subject_bp.route('/add_subject', methods = ['POST'])
 @admin_required
 @jwt_required() 

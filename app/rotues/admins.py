@@ -1,12 +1,11 @@
-from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import AdminIndexView
 from app import admin, db
 from app.forms import LoginForm
-from app.models import User
+from app.models import User, Announcement, Subject, Major, Room, College
 from werkzeug.security import  check_password_hash
 from flask_login import (
-    login_required,
     login_user,
     current_user,
     logout_user,   
@@ -37,9 +36,17 @@ class UserAdmin(MyModelView):
   column_searchable_list = ['fullname', 'email']
   page_size = 20
   
+############################## User ################################
+
 
 
 admin.add_view(UserAdmin(User, db.session))
+admin.add_view(MyModelView(Announcement, db.session))
+admin.add_view(MyModelView(Subject, db.session))
+admin.add_view(MyModelView(Major, db.session))
+admin.add_view(MyModelView(Room, db.session))
+admin.add_view(MyModelView(College, db.session))
+
 admin.add_link(MenuLink(name='Logout', category='', url="/logout"))
 
 
@@ -77,3 +84,4 @@ def logout():
   logout_user()
   return redirect(url_for("admin_bp.login"))
 
+################################################ routes ######################################

@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 import werkzeug.utils
 from app.forms import ResetPasswordForm
-from app.models import User
+from app.models import Major, User
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
 from app.helper import send_reset_email
@@ -103,6 +103,8 @@ def update_profile():
   image_file = request.files.get('image')
   fullname = data.get('fullname')
   phone = data.get('phone')
+  major_name = data.get('major_name')
+
 
   if image_file:
     picture_name = upload_picture( image_file, 'app/static/images/user-images/', (250,250) ) 
@@ -113,6 +115,7 @@ def update_profile():
       delete_picture('app/static/images/user-images/', user.img_url)
     user.img_url = picture_name
   
+
   if fullname:
     if not validate_fullname(fullname):
       return jsonify({'message': 'Invalid fullname'}), 400
@@ -120,8 +123,16 @@ def update_profile():
 
   if phone:
     if not validate_phone(phone):
-      return jsonify({'message': 'Invalid fullname'}), 400
+      return jsonify({'message': 'Invalid phone number'}), 400
     user.phone = phone
+
+  if major_name:
+    major = Major.query.filter_by(name = major_name).first()
+    if major:
+      user.major = major
+
+    
+
 
 
   db.session.commit()

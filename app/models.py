@@ -76,7 +76,7 @@ class User(db.Model,UserMixin):
   
   def get_reset_token(self):
         s = Serializer(current_app.config['SECRET_KEY'], salt='pw-reset')
-        return s.dumps({'user_id': self.id}).decode('utf-8')
+        return s.dumps({'user_id': self.id})
 
   @staticmethod
   def verify_reset_token(token, age=3600):

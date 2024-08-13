@@ -33,7 +33,6 @@ def all_users():
   return jsonify({"users": users_list}), 200
 
 
-
 @user_bp.route("/reset_password_request", methods=['POST'])
 def reset_request():
   data = request.get_json()
@@ -71,6 +70,7 @@ def reset_password(token):
 ### these routes for test the image upload and retreive
 
 @user_bp.route('/upload_image', methods = ['POST'])
+@jwt_required()
 def upload_image():
   image_file = request.files['image']
   upload_picture(image_file, 'app/static/images/user-images/', (250,250))
@@ -79,11 +79,9 @@ def upload_image():
 
 
 @user_bp.route('/get_image/<filename>', methods=['GET'])
+@jwt_required()
 def get_image(filename):
   return get_picture('app/static/images/user-images/',filename)
-
-###
-
 
 
 @user_bp.route("/update_profile", methods=["PUT"])
@@ -91,20 +89,16 @@ def get_image(filename):
 def update_profile():
   email = get_jwt_identity()
   user = User.query.filter_by(email = email).first()
-
-  
   json_data = request.form.get('json_data')
   if json_data:
     data = json.loads(json_data)
   else:
     return jsonify({"error": "No JSON data provided"}), 400
   
-  #data = request.get_json()
   image_file = request.files.get('image')
   fullname = data.get('fullname')
   phone = data.get('phone')
   major_name = data.get('major_name')
-
 
   if image_file:
     picture_name = upload_picture( image_file, 'app/static/images/user-images/', (250,250) ) 
@@ -114,7 +108,6 @@ def update_profile():
     if user.img_url != 'default_image.jpg':
       delete_picture('app/static/images/user-images/', user.img_url)
     user.img_url = picture_name
-  
 
   if fullname:
     if not validate_fullname(fullname):
@@ -131,12 +124,7 @@ def update_profile():
     if major:
       user.major = major
 
-    
-
-
-
   db.session.commit()
-
   return jsonify({'message': 'User Profile updated successfully.'}), 200
 
 

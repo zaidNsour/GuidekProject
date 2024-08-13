@@ -1,28 +1,19 @@
 import os
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, render_template, request, jsonify
 from app import db, mail
 from app.models import User, TokenBlocklist
 from flask_mail import Message
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.validators import validate_email, validate_password, validate_fullname
 from datetime import datetime
-
+import random
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required
 from flask_jwt_extended import get_jwt_identity, get_jwt
-
+from app.helper import send_verification_email
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-############################ functions
-
-def send_verification_email(email, code):
-  msg = Message('Your verification code', sender= os.environ.get('EMAIL_USER'), recipients=[email])
-  msg.body = f'Your verification code is {code}'
-  mail.send(msg)
-
-
-############################ 
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -53,8 +44,7 @@ def register():
   user = User(fullname = fullname, email = email, password = hashed_password)
   db.session.add(user)
   db.session.commit()
-  #verification_code = random.randint(100000, 999999)
-  #send_verification_email(email, verification_code)
+  send_verification_email(email)
   
   return jsonify({'message': 'User registered successfully. Please check your email to activate your account.'}), 201
 
@@ -103,26 +93,35 @@ def refresh():
   new_access_token = create_access_token(identity = email)
   return jsonify(access_token=new_access_token), 200
 
+
+
+# create end point for verify account request not embedded it in register account 
+# because if send_verification_email failed enable user to try again 
+@auth_bp.route("/verify_account_request", methods=['POST'])
+def verify_request():
+  data = request.get_json()
+  email = data.get('email')
+  if not validate_email(email):
+    return jsonify({'message': 'Invalid email format'}), 400
   
+  user = User.query.filter_by(email= email).first()
+  if user:
+    send_verification_email(user)
 
-# if you want to add email verification endpoint
-'''
-@auth_bp.route('/verify', methods=['POST'])
-def verify():
-    data = request.get_json()
-    email = data.get('email')
-    code = data.get('code')
+  return jsonify({'message': 'Check you email for verify your account'}),200
 
-    user = User.query.filter_by(email=email, verification_code=code).first()
+
+@auth_bp.route('/verify/<token>', methods=['POST'])
+def verify(token):
+    user= User.verify_reset_token(token)
 
     if not user:
-      return jsonify({'message': 'Invalid email or verification code'}), 400
+      return render_template('verified_failed.html')
 
     user.verified = True
-    user.verification_code = None
     db.session.commit()
 
-    return jsonify({'message': 'Email verified successfully'}), 200
-'''
+    return render_template('verified_success.html')
+
 
 

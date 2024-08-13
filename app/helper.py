@@ -9,12 +9,6 @@ import os
 from flask import send_file, jsonify
 
 
-
-'''
-
-'''
-
-
 def upload_picture(image_file, path, output_size = None ):
   random_hex=secrets.token_hex(10)
   _, picture_ext = os.path.splitext(image_file.filename)
@@ -73,24 +67,25 @@ def delete_picture(path, filename):
       return jsonify({"error": str(e)}), 500
   
 
-
-
-#use _external because redirect from email to this route 
 def send_reset_email(user):    
   token= user.get_reset_token()
    #change email
-  msg=Message('Password reset request', sender= 'zaidnsour1223@gmail.com',
+  msg=Message('Password reset request', sender= os.environ.get('EMAIL_USER'),
                recipients= [user.email],
                body=f''' To reset your password, visit the following link:
                {url_for('users.reset_password', token=token, _external=True)}  
                 if you did not make this request, please ignore this email'''
               )
   mail.send(msg)
-   
 
 
-
-
+def send_verification_email(user):
+  token= user.get_reset_token()
+  msg = Message('Verify your account', sender= os.environ.get('EMAIL_USER'), recipients=[user.email])
+  msg.body = f''' To verify your account, visit the following link:
+               {url_for('auth.verify', token=token, _external=True)}  
+                if you did not make this request, please ignore this email'''
+  mail.send(msg)
 
 
 

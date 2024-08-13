@@ -97,7 +97,7 @@ def refresh():
 
 # create end point for verify account request not embedded it in register account 
 # because if send_verification_email failed enable user to try again 
-@auth_bp.route("/verify_account_request", methods=['GET'])
+@auth_bp.route("/verify_account_request", methods=['POST'])
 def verify_request():
   data = request.get_json()
   email = data.get('email')
@@ -111,7 +111,7 @@ def verify_request():
   return jsonify({'message': 'Check you email for verify your account'}),200
 
 
-@auth_bp.route('/verify/<token>', methods=['POST'])
+@auth_bp.route('/verify/<token>', methods=['GET'])
 def verify(token):
     user= User.verify_reset_token(token)
 

@@ -1,5 +1,5 @@
 from flask import current_app
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import Serializer
 from . import db, login_manager
 from datetime import datetime
 from datetime import timedelta
@@ -60,8 +60,8 @@ class User(db.Model,UserMixin):
       "img_url": self.img_url,
   		}
   
-  def get_reset_token(self, expires_sec=1800):
-        s = Serializer(current_app.config['SECRET_KEY'], salt='pw-reset', expires_in=expires_sec)
+  def get_reset_token(self):
+        s = Serializer(current_app.config['SECRET_KEY'], salt='pw-reset')
         return s.dumps({'user_id': self.id}).decode('utf-8')
 
   @staticmethod

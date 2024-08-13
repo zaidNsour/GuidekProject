@@ -1,5 +1,5 @@
 from flask import current_app
-from itsdangerous import Serializer
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from . import db, login_manager
 from datetime import datetime
 from datetime import timedelta

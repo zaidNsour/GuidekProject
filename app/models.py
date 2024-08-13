@@ -48,17 +48,31 @@ class User(db.Model,UserMixin):
      return f'User({self.fullname}, {self.email})'
   
   def to_dict(self):
-    return {
-      "id": self.id,
-      "major":self.major.name,
-      "fullname": self.fullname,
-      "email": self.email,
-      "verified": self.verified,
-      "date_of_birth": self.date_of_birth,
-      "bio": self.bio,
-      "phone": self.phone,
-      "img_url": self.img_url,
-  		}
+
+    if self.major:
+      return {
+        "id": self.id,
+        "major":self.major.name,
+        "fullname": self.fullname,
+        "email": self.email,
+        "verified": self.verified,
+        "date_of_birth": self.date_of_birth,
+        "bio": self.bio,
+        "phone": self.phone,
+        "img_url": self.img_url,
+  		  }
+    else:
+       return {
+        "id": self.id,
+        "major":None,
+        "fullname": self.fullname,
+        "email": self.email,
+        "verified": self.verified,
+        "date_of_birth": self.date_of_birth,
+        "bio": self.bio,
+        "phone": self.phone,
+        "img_url": self.img_url,
+       }
   
   def get_reset_token(self):
         s = Serializer(current_app.config['SECRET_KEY'], salt='pw-reset')

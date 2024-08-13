@@ -1,10 +1,10 @@
 import os
 from flask import Blueprint, render_template, request, jsonify
 from app import db, mail
-from app.models import User, TokenBlocklist
+from app.models import Major, User, TokenBlocklist
 from flask_mail import Message
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.validators import validate_email, validate_password, validate_fullname
+from app.validators import validate_email, validate_number, validate_password, validate_fullname
 from datetime import datetime
 import random
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required
@@ -19,10 +19,12 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 def register():
   data = request.get_json()
   fullname = data.get('fullname')
+  number = data.get('number')
+  major_name = data.get('major_name')
   email = data.get('email')
   password = data.get('password')
 
-  if not all([fullname, email, password]):
+  if not all([fullname, email, password, number, major_name]):
     return jsonify({'message': 'Missing fullname, email, or password'}), 400
     
 
@@ -35,13 +37,20 @@ def register():
   is_valid_password, password_message = validate_password(password)
   if not is_valid_password:
     return jsonify({'message': password_message}), 400
+  
+  if not validate_number(number):
+      return jsonify({'message': 'Invalid student number'}), 400
+  
+  major = Major.query.filter_by(name = major_name).first()
+  if not major:
+    return jsonify({'message': 'Invalid major name'}), 400
 
 
   if User.query.filter_by(email = email).first():
     return jsonify({'message': 'User already exists'}), 400
 
   hashed_password = generate_password_hash(password)
-  user = User(fullname = fullname, email = email, password = hashed_password)
+  user = User(fullname= fullname, email= email, password= hashed_password, number= number, major= major )
   db.session.add(user)
   db.session.commit()
 
@@ -113,7 +122,7 @@ def verify_request():
 
 @auth_bp.route('/verify/<token>', methods=['GET'])
 def verify(token):
-    user= User.verify_reset_token(token)
+    user= User.verify_token(token)
 
     if not user:
       return render_template('verified_failed.html')

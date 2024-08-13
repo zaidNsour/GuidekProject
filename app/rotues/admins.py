@@ -3,7 +3,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import AdminIndexView
 from app import admin, db
 from app.forms import LoginForm
-from app.models import User, Announcement, Subject, Major, Room, College
+from app.models import QA, ClassRequest, User, Announcement, Subject, Major, Room, College
 from werkzeug.security import  check_password_hash
 from flask_login import (
     login_user,
@@ -20,11 +20,13 @@ admin_bp = Blueprint('admin_bp', __name__)
 class MyModelView(ModelView):
   def is_accessible(self):
     return current_user.is_authenticated and current_user.is_admin == True
+ 
 
 class MyAdminIndexView(AdminIndexView):
    def is_accessible(self):
     #change it to current_user.is_admin but know keep it for testing
     return current_user.is_authenticated and current_user.is_admin == True
+ 
    
 
    
@@ -46,6 +48,8 @@ admin.add_view(MyModelView(Subject, db.session))
 admin.add_view(MyModelView(Major, db.session))
 admin.add_view(MyModelView(Room, db.session))
 admin.add_view(MyModelView(College, db.session))
+admin.add_view(MyModelView(QA, db.session))
+admin.add_view(MyModelView(ClassRequest, db.session))
 
 admin.add_link(MenuLink(name='Logout', category='', url="/logout"))
 

@@ -16,8 +16,11 @@ def validate_password(password):
 def validate_fullname(fullname):
     return len(fullname) >= 3
 
-def validate_phone(fullname):
-    return len(fullname) >= 10
+def validate_phone(phone):
+    return len(phone) >= 10
+
+def validate_number(number):
+    return len(number) >= 3
 
 def validate_announ_title(title):
     return len(title) >= 6

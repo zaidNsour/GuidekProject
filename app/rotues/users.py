@@ -1,17 +1,14 @@
-from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
-import werkzeug.utils
+from flask import Blueprint, flash, jsonify, render_template, request
 from app.forms import ResetPasswordForm
 from app.models import Major, User
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
 from app.helper import send_reset_email
-from app.validators import validate_email, validate_fullname, validate_phone
+from app.validators import validate_email, validate_fullname, validate_phone, validate_number
 from app import  db
 from werkzeug.security import generate_password_hash
 from app.helper import upload_picture, get_picture, delete_picture
 import json
-
-
 
 
 user_bp = Blueprint('users', __name__, url_prefix='/users')
@@ -41,29 +38,27 @@ def reset_request():
   if not validate_email(email):
     return jsonify({'message': 'Invalid email format'}), 400
  
-  user = User.query.filter_by(email= email).first()
+  user = User.query.filter_by(email = email).first()
   if user:
     send_reset_email(user)
 
   return jsonify({'message': 'If this account exist, you will recieve an email with isntruction'}),200
   
   
-  
 @user_bp.route("/reset_password/<token>", methods=['GET','POST'])
 def reset_password(token):
   
-   user= User.verify_reset_token(token)
+   user= User.verify_token(token)
    if not user:
       flash('The token is invalid or expired', 'warning')
    
-   form= ResetPasswordForm()
+   form = ResetPasswordForm()
    if form.validate_on_submit():
       hashed_password = generate_password_hash(form.password.data)
       user.password = hashed_password
       db.session.commit()
       flash(message="your Password has been updated successfully",category="success")
-       
-      
+
    return render_template('reset_password.html', title='Reset Password', form = form)
 
 
@@ -77,16 +72,15 @@ def upload_image():
   return jsonify({"message":"Image uploaded successfully."})
 
 
-
 @user_bp.route('/get_image/<filename>', methods=['GET'])
 @jwt_required()
 def get_image(filename):
   return get_picture('app/static/images/user-images/',filename)
 
 
-@user_bp.route("/update_profile", methods=["PUT"])
+@user_bp.route("/update_user_info", methods=["PUT"])
 @jwt_required()
-def update_profile():
+def update_user_info():
   email = get_jwt_identity()
   user = User.query.filter_by(email = email).first()
   json_data = request.form.get('json_data')
@@ -97,6 +91,7 @@ def update_profile():
   
   image_file = request.files.get('image')
   fullname = data.get('fullname')
+  number = data.get('number')
   phone = data.get('phone')
   major_name = data.get('major_name')
 
@@ -113,6 +108,11 @@ def update_profile():
     if not validate_fullname(fullname):
       return jsonify({'message': 'Invalid fullname'}), 400
     user.fullname = fullname
+
+  if number:
+    if not validate_number(number):
+      return jsonify({'message': 'Invalid student number'}), 400
+    user.number = number
 
   if phone:
     if not validate_phone(phone):

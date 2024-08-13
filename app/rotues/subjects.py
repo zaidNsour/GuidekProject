@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app import db
-from app.models import Subject
+from app.models import College, Subject
 from flask_jwt_extended import jwt_required
 from app.decorators import admin_required
 
@@ -16,11 +16,15 @@ def add_subjects():
  for subject in data:
   name = subject.get('name')
   num_of_hours = subject.get('num_of_hours')
-  college_id = subject.get('college_id')
+  college_name = subject.get('college_name')
+
   if not name:
      return jsonify({'message': 'Missing subject name'}), 400
+  college = College.query.filter_by(name = college_name).first()
+  if not college:
+     return jsonify({'message': 'Invalid college name'}), 400
 
-  subject = Subject(name = name, num_of_hours = num_of_hours, college_id = college_id )
+  subject = Subject(name = name, num_of_hours = num_of_hours, college = college )
   db.session.add(subject)
  db.session.commit()
 

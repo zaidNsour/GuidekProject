@@ -33,7 +33,8 @@ def create_app():
   admin.init_app(app, index_view= MyAdminIndexView())
   login_manager.init_app(app)
 
-  from app.rotues import auth,announcements, users, subjects, admins, majors, rooms
+  from app.rotues import auth,announcements, users, subjects, admins, majors, rooms 
+  from app.rotues import classes, faq
   from app.scheduler import start_scheduler
   from app.models import TokenBlocklist
 
@@ -45,6 +46,8 @@ def create_app():
   app.register_blueprint(admins.admin_bp)
   app.register_blueprint(majors.major_bp)
   app.register_blueprint(rooms.room_bp)
+  app.register_blueprint(classes.class_bp)
+  app.register_blueprint(faq.faq_bp)
 
   with app.app_context():
   # Create the database if it doesn't exist

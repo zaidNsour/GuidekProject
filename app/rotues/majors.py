@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app import db
-from app.models import Major
+from app.models import College, Major
 from flask_jwt_extended import jwt_required
 from app.decorators import admin_required
 
@@ -13,10 +13,12 @@ def add_majors():
  data = request.get_json()
  for major in data:
   name = major.get('name')
-  college_id = major.get('college_id')
+  college_name = major.get('college_name')
+  college = College.query.filter_by(name = college_name).first()
+  if not college:
+    return jsonify({"message": "invalid college name"}), 201
  
-
-  major = Major(name = name, college_id = college_id )
+  major = Major(name = name, college = college )
   db.session.add(major)
  db.session.commit()
 

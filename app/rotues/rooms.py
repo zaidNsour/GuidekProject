@@ -13,15 +13,30 @@ def add_rooms():
  data = request.get_json()
  for room in data:
   name = room.get('name')
-  college_id = room.get('college_id')
+  college_name= room.get('college_name')
   direction = room.get('direction')
+  if college_name:
+    college = College.query.filter_by(name = college_name).first()
+    if not college:
+       return jsonify({"message": "Invalid college"}), 400
+ 
  
 
-  room = Room(name = name, college_id = college_id, direction = direction )
+  room = Room(name = name, college = college, direction = direction )
   db.session.add(room)
  db.session.commit()
 
  return jsonify({"message": "rooms added successfully"}), 201
+
+
+
+@room_bp.route('/all_rooms', methods = ['GET'])
+@jwt_required() 
+def all_rooms():
+  rooms = Room.query.all()
+  rooms_list = [room.to_dict() for room in rooms]
+  
+  return jsonify({"rooms": rooms_list}), 200
 
 
 @room_bp.route('/get_location', methods=['GET'])

@@ -68,7 +68,7 @@ def delete_picture(path, filename):
   
 
 def send_reset_email(user):    
-  token= user.get_reset_token()
+  token= user.get_token()
    #change email
   msg=Message('Password reset request', sender= os.environ.get('EMAIL_USER'),
                recipients= [user.email],
@@ -80,7 +80,7 @@ def send_reset_email(user):
 
 
 def send_verification_email(user):
-  token= user.get_reset_token()
+  token= user.get_token()
   msg = Message('Verify your account', sender= os.environ.get('EMAIL_USER'), recipients=[user.email])
   msg.body = f''' To verify your account, visit the following link:
                {url_for('auth.verify', token=token, _external=True)}  

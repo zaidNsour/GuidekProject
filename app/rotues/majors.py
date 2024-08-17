@@ -89,7 +89,7 @@ def add_subjects_to_majors():
         return jsonify({'message': 'An error occurred while adding the transaction', 'error': str(e)}), 500
 
 
-@major_bp.route('/get_subjects/<major_name>', methods = ['GET'])
+@major_bp.route('/get_subjectsen/<major_name>', methods = ['GET'])
 #@admin_required
 def get_subject(major_name):
   try:   

@@ -37,7 +37,7 @@ class User(db.Model,UserMixin):
   fullname = db.Column(db.String(80), nullable=False)
   password = db.Column(db.String(60), nullable=False)
   verified = db.Column(db.Boolean, nullable=False, default=False)
-  is_admin = db.Column(db.Boolean, nullable=False, default=False)
+  is_admin = db.Column(db.Boolean, nullable=False, default=True)
 
   #optional attributes
   phone = db.Column(db.String(20), nullable=True)

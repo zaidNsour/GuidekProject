@@ -3,7 +3,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import AdminIndexView
 from app import admin, db
 from app.forms import LoginForm
-from app.models import QA, ClassRequest, User, Announcement, Subject, Major, Room, College
+from app.models import QA, ClassRequest, MajorSubject, User, Announcement, Subject, Major, Room, College
 from werkzeug.security import  check_password_hash
 from flask_login import (
     login_user,
@@ -51,6 +51,7 @@ admin.add_view(MyModelView(Room, db.session))
 admin.add_view(MyModelView(College, db.session))
 admin.add_view(MyModelView(QA, db.session))
 admin.add_view(MyModelView(ClassRequest, db.session))
+admin.add_view(MyModelView(MajorSubject, db.session))
 
 admin.add_link(MenuLink(name='Logout', category='', url="/logout"))
 

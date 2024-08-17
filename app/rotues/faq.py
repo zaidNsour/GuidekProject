@@ -10,8 +10,7 @@ from app.models import User
 faq_bp = Blueprint('faq', __name__, url_prefix='/faq')
 
 @faq_bp.route('/add_qa', methods = ['POST'])
-@admin_required
-@jwt_required() 
+#@admin_required 
 def add_qa():
   data = request.get_json()
   for d in data:

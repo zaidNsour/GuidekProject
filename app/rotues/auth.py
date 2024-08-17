@@ -2,17 +2,14 @@ import os
 from flask import Blueprint, render_template, request, jsonify
 from app import db, mail
 from app.models import Major, User, TokenBlocklist
-from flask_mail import Message
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.validators import validate_email, validate_number, validate_password, validate_fullname
 from datetime import datetime
-import random
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from app.helper import send_verification_email
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
-
 
 
 @auth_bp.route('/register', methods=['POST'])

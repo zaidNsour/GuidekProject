@@ -19,13 +19,14 @@ admin_bp = Blueprint('admin_bp', __name__)
 
 class MyModelView(ModelView):
   def is_accessible(self):
-    return current_user.is_authenticated and current_user.is_admin == True
+    return True
+    #return current_user.is_authenticated and current_user.is_admin == True
  
 
 class MyAdminIndexView(AdminIndexView):
    def is_accessible(self):
-    #change it to current_user.is_admin but know keep it for testing
-    return current_user.is_authenticated and current_user.is_admin == True
+    return True
+    #return current_user.is_authenticated and current_user.is_admin == True
  
    
 

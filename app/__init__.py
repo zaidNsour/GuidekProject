@@ -34,20 +34,22 @@ def create_app():
   login_manager.init_app(app)
 
   from app.rotues import auth,announcements, users, subjects, admins, majors, rooms 
-  from app.rotues import classes, faq
+  from app.rotues import classes, faq,transactions, colleges
   from app.scheduler import start_scheduler
   from app.models import TokenBlocklist
 
 
   app.register_blueprint(auth.auth_bp)
-  app.register_blueprint(announcements.announ_bp)
-  app.register_blueprint(subjects.subject_bp)
   app.register_blueprint(users.user_bp)
   app.register_blueprint(admins.admin_bp)
+  app.register_blueprint(announcements.announ_bp)
+  app.register_blueprint(subjects.subject_bp)
   app.register_blueprint(majors.major_bp)
   app.register_blueprint(rooms.room_bp)
   app.register_blueprint(classes.class_bp)
   app.register_blueprint(faq.faq_bp)
+  app.register_blueprint(transactions.transaction_bp)
+  app.register_blueprint(colleges.college_bp)
 
   with app.app_context():
   # Create the database if it doesn't exist

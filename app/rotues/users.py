@@ -75,7 +75,12 @@ def upload_image():
 @user_bp.route('/get_image/<filename>', methods=['GET'])
 @jwt_required()
 def get_image(filename):
-  return get_picture('app/static/images/user-images/',filename)
+  try:       
+    return get_picture('app/static/images/user-images/', filename)
+  except FileNotFoundError:
+    return jsonify({"error": "Image not found"}), 404
+
+### these routes for test the image upload and retreive
 
 
 @user_bp.route("/update_user_info", methods=["PUT"])

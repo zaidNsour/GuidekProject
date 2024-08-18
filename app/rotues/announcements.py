@@ -69,6 +69,25 @@ def get_image(filename):
     return get_picture('app/static/images/announ-images/', filename)
   except FileNotFoundError:
     return jsonify({"error": "Image not found"}), 404
+  
+
+@announ_bp.route('/all_images_name', methods = ['GET'])
+@jwt_required()
+def all_image_name():
+  try:
+    announcements = Announcement.query.all()
+    images_info = [{"image_name":announcement.to_dict().get("img_url"), "id":announcement.to_dict().get("id")} 
+                   for announcement in announcements]
+ 
+    return jsonify({"images_info": images_info}), 200
+  
+  
+  except SQLAlchemyError as e:
+    return jsonify({'message': 'Database error occurred while adding the announcement', 'error': str(e)}), 500
+  
+  except Exception as e:
+    return jsonify({'message': 'An error occurred while retrieving the announcement', 'error': str(e)}), 500
+
 
 
 

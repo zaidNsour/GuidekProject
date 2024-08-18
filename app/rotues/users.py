@@ -89,10 +89,10 @@ def update_user_info():
   email = get_jwt_identity()
   user = User.query.filter_by(email = email).first()
   json_data = request.form.get('json_data')
+  data = {}
   if json_data:
     data = json.loads(json_data)
-  else:
-    return jsonify({"error": "No JSON data provided"}), 400
+  
   
   image_file = request.files.get('image')
   fullname = data.get('fullname')

@@ -5,6 +5,9 @@ def validate_email(email):
     email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(email_regex, email) is not None
 
+
+'''
+
 def validate_password(password):
     if len(password) < 8:
         return False, "Password must be at least 8 characters long"
@@ -13,6 +16,20 @@ def validate_password(password):
     if not re.search(r"[0-9]", password):
         return False, "Password must contain at least one digit"
     return True, ""
+'''
+def validate_password(value):
+    if not value:
+        return False, 'Please enter your password'
+    elif len(value) < 8:
+        return False,'Password must be at least 8 characters'
+    elif not re.search(r'[A-Z]', value):
+        return False,'Password must contain at least one uppercase letter'
+    elif not re.search(r'[0-9]', value):
+        return False,'Password must contain at least one number'
+    elif not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
+        return False,'Password must contain at least one special character'
+    return True, ""
+    
 
 def validate_fullname(fullname):
     return len(fullname) >= 3

@@ -35,7 +35,21 @@ def add_majors():
         db.session.rollback()
         return jsonify({'message': 'An error occurred while adding the transaction', 'error': str(e)}), 500
   
-
+  
+@major_bp.route('/all_majors', methods = ['GET'])
+def all_subjects():
+  try:
+    majors = Major.query.all()
+    major_list = [major.to_dict() for major in  majors]
+    
+    return jsonify({"majors": major_list}), 200
+  
+  except SQLAlchemyError as e:
+        return jsonify({'message': 'Database error occurred while get the majors', 'error': str(e)}), 500
+  
+  except Exception as e:
+ 
+        return jsonify({'message': 'An error occurred while get the majors', 'error': str(e)}), 500
 
 
 @major_bp.route('/add_subjects_to_majors', methods = ['POST'])

@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 major_bp = Blueprint('majors', __name__, url_prefix='/majors')
 
 @major_bp.route('/add_majors', methods = ['POST'])
-#@admin_required
+@admin_required
 def add_majors():
   try:   
     data = request.get_json()
@@ -53,7 +53,7 @@ def all_subjects():
 
 
 @major_bp.route('/add_subjects_to_majors', methods = ['POST'])
-#@admin_required
+@admin_required
 def add_subjects_to_majors():
   try:   
     data = request.get_json()
@@ -103,8 +103,8 @@ def add_subjects_to_majors():
         return jsonify({'message': 'An error occurred while adding the transaction', 'error': str(e)}), 500
 
 
-@major_bp.route('/get_subjectsen/<major_name>', methods = ['GET'])
-#@admin_required
+@major_bp.route('/get_subjects/<major_name>', methods = ['GET'])
+@jwt_required()
 def get_subject(major_name):
   try:   
     major = Major.query.filter_by(name = major_name).first()
@@ -123,3 +123,6 @@ def get_subject(major_name):
   except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
+  
+
+

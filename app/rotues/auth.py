@@ -50,7 +50,6 @@ def register():
   user = User(fullname= fullname, email= email, password= hashed_password, number= number, major= major )
   db.session.add(user)
   db.session.commit()
-
   
   return jsonify({'message': 'User registered successfully. Please check your email to activate your account.'}), 201
 

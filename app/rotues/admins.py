@@ -19,14 +19,12 @@ admin_bp = Blueprint('admin_bp', __name__)
 
 class MyModelView(ModelView):
   def is_accessible(self):
-    return True
-    #return current_user.is_authenticated and current_user.is_admin == True
+    return current_user.is_authenticated and current_user.is_admin == True
  
 
 class MyAdminIndexView(AdminIndexView):
    def is_accessible(self):
-    return True
-    #return current_user.is_authenticated and current_user.is_admin == True
+    return current_user.is_authenticated and current_user.is_admin == True
  
    
 
@@ -37,6 +35,7 @@ class UserAdmin(MyModelView):
   
   column_list = ['fullname','email', 'verified', 'is_admin','phone','img_url']
   column_searchable_list = ['fullname', 'email']
+  form_excluded_columns = ('password')
   page_size = 20
   
 ############################## User ################################

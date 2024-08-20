@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, jsonify, render_template, request
 from app.forms import ResetPasswordForm
-from app.models import Major, User
+from app.models import Major, Support, User
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
 from app.helper import send_reset_email
@@ -9,6 +9,7 @@ from app import  db
 from werkzeug.security import generate_password_hash
 from app.helper import upload_picture, get_picture, delete_picture
 import json
+from sqlalchemy.exc import SQLAlchemyError
 
 
 user_bp = Blueprint('users', __name__, url_prefix='/users')
@@ -131,6 +132,37 @@ def update_user_info():
 
   db.session.commit()
   return jsonify({'message': 'User Profile updated successfully.'}), 200
+
+
+
+@user_bp.route('/support', methods = ['POST'])
+@jwt_required() 
+def support():
+  try:
+    email = get_jwt_identity()
+
+    data = request.get_json()
+    issue = data.get('issue')
+    title = data.get('title')
+    description = data.get('description')
+
+    if not all([issue, title, description, email]):
+        return jsonify({'message': 'Missing issue, title, description, or email'}), 400
+    
+    support = Support(user_email = email, issue = issue, title = title, description = description)
+    db.session.add(support)
+    db.session.commit()
+
+    return jsonify({"message": "support created successfully."}), 201
+
+  except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({'message': 'Database error occurred while adding the support', 'error': str(e)}), 500
+  
+    
+  except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'An error occurred while adding the support', 'error': str(e)}), 500
 
 
    

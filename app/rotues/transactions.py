@@ -42,12 +42,10 @@ def add_transaction():
 
     return jsonify({"message": "Transaction added successfully"}), 201
   
-
   except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({'message': 'Database error occurred while adding the transaction', 'error': str(e)}), 500
   
-    
   except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'An error occurred while adding the transaction', 'error': str(e)}), 500
@@ -73,7 +71,6 @@ def transactions():
 @transaction_bp.route('/transaction_steps/<string:transaction_name>', methods=['GET'])
 def transaction_steps(transaction_name):
   try:
-        
     transaction = Transaction.query.filter_by(name= transaction_name).first()
     if not transaction:
       return jsonify({'message': 'Invalid transaction name'}), 404

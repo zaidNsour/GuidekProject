@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 room_bp = Blueprint('rooms', __name__, url_prefix='/rooms')
 
 @room_bp.route('/add_rooms', methods = ['POST'])
-#@admin_required 
+@admin_required 
 def add_rooms():
   try:
     data = request.get_json()
@@ -38,7 +38,7 @@ def add_rooms():
 
 
 @room_bp.route('/all_rooms', methods = ['GET'])
-#@jwt_required() 
+@jwt_required() 
 def all_rooms():
   rooms = Room.query.all()
   rooms_list = [room.to_dict() for room in rooms]
@@ -46,7 +46,7 @@ def all_rooms():
 
 
 @room_bp.route('/get_location/<room_name>', methods=['GET'])
-#@jwt_required()
+@jwt_required()
 def get_location(room_name): 
     if not room_name:
         return jsonify({"error": "Room name is required"}), 400

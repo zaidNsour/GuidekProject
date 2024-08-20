@@ -79,8 +79,26 @@ class ClassRequest(db.Model):
   student_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
   subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), primary_key=True)
   date_of_request = db.Column(db.DateTime, nullable=False, default= datetime.now)
-  
-  
+
+'''
+class ClassEnroll(db.Model):
+  __tablename__ = 'class_enroll'
+  student_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+  class_id = db.Column(db.Integer, db.ForeignKey('subject.id'), primary_key=True)
+  date_of_enrolled = db.Column(db.DateTime, nullable=False, default= datetime.now)
+
+
+class Class(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable = False)
+  instructor_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = True)
+  room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable = True)
+  books = db.Column(db.Text, nullable = True)
+  slides = db.Column(db.Text, nullable = True)
+  course_plan = db.Column(db.Text, nullable = True)
+
+'''
+
 class Announcement(db.Model):
   id = db.Column(db.Integer, primary_key=True)
 
@@ -99,18 +117,19 @@ class Announcement(db.Model):
   		}
   
 
-
 class Subject(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(120),unique=True,nullable=False)
-
+  book = db.Column(db.Text, nullable = True)
+  slides = db.Column(db.Text, nullable = True)
+  course_plan = db.Column(db.Text, nullable = True)
+  
   def to_dict(self):
     return {"name": self.name}   
      
   def __repr__(self):
     return f' Subject({self.name})' 
     
-
 
 class Major(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -132,7 +151,6 @@ class MajorSubject(db.Model):
     num_of_hours = db.Column(db.Integer, nullable=False)
     year = db.Column(db.Integer, nullable=False)
     semester = db.Column(db.Integer, nullable=False)
-    type = db.Column(db.String(50), nullable=True)
 
     def __repr__(self):
         return f'<MajorSubject {self.major_id}, {self.subject_id}, type = {self.type}>'
@@ -162,7 +180,6 @@ class College(db.Model):
   location = db.Column(db.String(120), nullable = False)
 
   majors = db.relationship('Major', backref=db.backref('college', lazy=True))
-
   rooms = db.relationship('Room', backref=db.backref('college', lazy=True))
 
 
@@ -207,6 +224,20 @@ class TransactionStep(db.Model):
      db.session.commit()
      return new_step
    '''
+
+class Support(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  user_email = db.Column(db.String(80), nullable = False )
+  issue = db.Column(db.String(80), nullable = False )
+  title = db.Column( db.String(80), nullable = False )
+  description = db.Column(db.Text, nullable = True)
+
+
+
+
+
+
+
 
    
    

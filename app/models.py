@@ -43,7 +43,10 @@ class User(db.Model,UserMixin):
   phone = db.Column(db.String(20), nullable=True)
   img_url = db.Column(db.String(20), nullable=False, default="default_image.jpg")
 
-  requested_classes = db.relationship('Subject', secondary = 'class_request', backref = 'students_request')
+  #requested_classes = db.relationship('Subject', secondary = 'class_request', backref=db.backref('users', lazy=True))
+  class_requests = db.relationship('ClassRequest', back_populates='user')
+  requested_classes = db.relationship('ClassRequest', back_populates='user', overlaps="class_requests")
+
 
   def __repr__(self):
      return f'User({self.fullname}, {self.number})'
@@ -79,6 +82,9 @@ class ClassRequest(db.Model):
   student_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
   subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), primary_key=True)
   date_of_request = db.Column(db.DateTime, nullable=False, default= datetime.now)
+
+  user = db.relationship('User', back_populates='class_requests')
+  subject = db.relationship('Subject', back_populates='class_requests')
 
 '''
 class ClassEnroll(db.Model):
@@ -123,6 +129,12 @@ class Subject(db.Model):
   book = db.Column(db.Text, nullable = True)
   slides = db.Column(db.Text, nullable = True)
   course_plan = db.Column(db.Text, nullable = True)
+  class_requests = db.relationship('ClassRequest', back_populates='subject')
+
+  major_subjects = db.relationship('MajorSubject', back_populates='subject', overlaps="majors,subjects")
+  majors = db.relationship('Major', secondary='major_subject', back_populates='subjects', overlaps="major_subjects")
+
+
   
   def to_dict(self):
     return {"name": self.name}   
@@ -137,26 +149,31 @@ class Major(db.Model):
 
   name = db.Column(db.String(60), unique=True, nullable=False)
   students = db.relationship('User', backref=db.backref('major', lazy=True))
-  subjects = db.relationship('Subject', secondary = 'major_subject', backref = 'majors')
+  major_subjects = db.relationship('MajorSubject', back_populates='major', overlaps="majors,subjects")
+  subjects = db.relationship('Subject', secondary='major_subject', back_populates='majors', overlaps="major_subjects")
   def to_dict(self):
     return {"name": self.name, "college_name":self.college.name} 
   
 
 # add num_of_hours
 class MajorSubject(db.Model):
-    __tablename__ = 'major_subject'
-    major_id = db.Column(db.Integer, db.ForeignKey('major.id'), primary_key=True)
-    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), primary_key=True)
+  __tablename__ = 'major_subject'
+  major_id = db.Column(db.Integer, db.ForeignKey('major.id'), primary_key=True)
+  subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), primary_key=True)
 
-    num_of_hours = db.Column(db.Integer, nullable=False)
-    year = db.Column(db.Integer, nullable=False)
-    semester = db.Column(db.Integer, nullable=False)
+  num_of_hours = db.Column(db.Integer, nullable=False)
+  year = db.Column(db.Integer, nullable=False)
+  semester = db.Column(db.Integer, nullable=False)
 
-    def __repr__(self):
-        return f'<MajorSubject {self.major_id}, {self.subject_id}, type = {self.type}>'
+  major = db.relationship('Major', back_populates='major_subjects', overlaps="majors,subjects")
+  subject = db.relationship('Subject', back_populates='major_subjects', overlaps="majors,subjects")
+
+
+  def __repr__(self):
+    return f'<MajorSubject {self.major_id}, {self.subject_id}>'
     
-    def to_dict(self):
-      return {"subject name": Subject.query.filter_by(id = self.subject_id).first().name,
+  def to_dict(self):
+    return {"subject name": Subject.query.filter_by(id = self.subject_id).first().name,
             "num_of_hours": self.num_of_hours, 
             "year": self.year,
             "semester":self.semester
@@ -232,15 +249,6 @@ class Support(db.Model):
   title = db.Column( db.String(80), nullable = False )
   description = db.Column(db.Text, nullable = True)
 
-
-
-
-
-
-
-
-   
-   
 
 
 

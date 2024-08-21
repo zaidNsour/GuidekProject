@@ -4,7 +4,7 @@ from flask_admin import AdminIndexView
 from app import admin, db
 from app.forms import LoginForm, NewMajorForm, NewMajorSubjectForm, NewRoomForm, NewUserForm
 from app.helper import delete_picture, upload_picture
-from app.models import QA, ClassRequest, MajorSubject, User, Announcement, Subject, Major, Room, College
+from app.models import QA, ClassRequest, MajorSubject, Support, User, Announcement, Subject, Major, Room, College
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import (
     login_user,
@@ -18,7 +18,6 @@ from wtforms import PasswordField
 
 
 admin_bp = Blueprint('admin_bp', __name__)
-
 
 
 class MyModelView(ModelView):
@@ -206,6 +205,14 @@ class MajorSubjectAdmin(MyModelView):
     del form_class.major
     del form_class.subject  
     return form_class
+  
+############################## Class Request ################################ 
+
+class SupportAdmin(MyModelView):
+  column_searchable_list = ['issue', 'title']
+  can_create = False  
+  can_edit = False    
+  page_size = 20
 
 
 admin.add_view(UserAdmin(User, db.session))
@@ -217,6 +224,7 @@ admin.add_view(MyModelView(College, db.session))
 admin.add_view(MyModelView(QA, db.session))
 admin.add_view(ClassRequestAdmin(ClassRequest, db.session))
 admin.add_view(MajorSubjectAdmin(MajorSubject, db.session))
+admin.add_view(SupportAdmin(Support, db.session))
 
 admin.add_link(MenuLink(name='Logout', category='', url="/logout"))
 

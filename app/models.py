@@ -48,6 +48,7 @@ class User(db.Model,UserMixin):
   requested_classes = db.relationship('ClassRequest', back_populates='user', overlaps="class_requests")
 
 
+
   def __repr__(self):
      return f'User({self.fullname}, {self.number})'
   
@@ -148,7 +149,7 @@ class Major(db.Model):
   college_id = db.Column(db.Integer, db.ForeignKey("college.id"), nullable=False) 
 
   name = db.Column(db.String(60), unique=True, nullable=False)
-  students = db.relationship('User', backref=db.backref('major', lazy=True))
+  students = db.relationship('User', backref ='major', lazy=True)
   major_subjects = db.relationship('MajorSubject', back_populates='major', overlaps="majors,subjects")
   subjects = db.relationship('Subject', secondary='major_subject', back_populates='majors', overlaps="major_subjects")
   def to_dict(self):

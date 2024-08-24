@@ -121,12 +121,12 @@ def verify(token):
     user= User.verify_token(token)
 
     if not user:
-      return render_template('verified_failed.html')
+      return render_template('verified_failed.html', title="Verify Account")
 
     user.verified = True
     db.session.commit()
 
-    return render_template('verified_success.html')
+    return render_template('verified_success.html', title="Verify Account")
 
 
 

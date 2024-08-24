@@ -226,7 +226,7 @@ class TransactionStep(db.Model):
    id = db.Column(db.Integer, primary_key=True)
    transaction_id = db.Column(db.Integer, db.ForeignKey('transaction.id'), nullable=False)
 
-   number = db.Column(db.Integer, nullable=False)
+   number = db.Column(db.Integer, nullable= True)
    description = db.Column(db.String(120), nullable=False)
 
    def to_dict(self):

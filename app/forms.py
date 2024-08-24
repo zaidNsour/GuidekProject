@@ -7,7 +7,7 @@ from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Length, Email
 from wtforms.validators import Regexp, ValidationError, EqualTo
 from wtforms_sqlalchemy.fields import QuerySelectField
-from app.models import College, Major, Subject, User
+from app.models import College, Major, Subject, Transaction, TransactionStep, User
 
 def choice_query_major():
   return Major.query 
@@ -17,6 +17,9 @@ def choice_query_college():
  
 def choice_query_subject():
   return Subject.query
+
+def choice_query_transaction():
+  return Transaction.query
 
 
 class ResetPasswordForm(FlaskForm):
@@ -90,6 +93,19 @@ class NewMajorSubjectForm(FlaskForm):
     major = Major.query.filter_by(name= name.data).first()
     if major:
       raise ValidationError("Major is already exist")
+    
+    
+class NewTransactionStepForm(FlaskForm):
+  transaction = QuerySelectField("Transaction", query_factory=choice_query_transaction, get_label="name")
+  number = StringField("Number", validators=[DataRequired(), Length(max= 1)])
+  description = StringField("Description", validators=[DataRequired(), Length(max= 120)])
+
+  def validate_number(self, number):
+    t = Transaction.query.filter_by(name = self.transaction.data.name).first()
+    transaction_step = TransactionStep.query.filter_by(transaction = t,number= number.data).first()
+    if transaction_step:
+      raise ValidationError("Number of this step in the transaction already exist.")
+    
     
 
     

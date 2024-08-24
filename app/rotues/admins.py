@@ -2,9 +2,9 @@ from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import AdminIndexView
 from app import admin, db
-from app.forms import LoginForm, NewMajorForm, NewMajorSubjectForm, NewRoomForm, NewUserForm
+from app.forms import LoginForm, NewMajorForm, NewMajorSubjectForm, NewRoomForm, NewTransactionStepForm, NewUserForm
 from app.helper import delete_picture, upload_picture
-from app.models import QA, ClassRequest, MajorSubject, Support, User, Announcement, Subject, Major, Room, College
+from app.models import QA, ClassRequest, MajorSubject, Support, Transaction, TransactionStep, User, Announcement, Subject, Major, Room, College
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import (
     login_user,
@@ -213,7 +213,37 @@ class SupportAdmin(MyModelView):
   can_create = False  
   can_edit = False    
   page_size = 20
+############################## Transaction ################################ 
 
+class TransactionAdmin(MyModelView):
+  column_searchable_list = ['name']   
+  page_size = 20
+  form_excluded_columns = ('steps',)
+
+############################## Transaction Step ################################ 
+
+class TransactionStepAdmin(MyModelView):
+  column_list = [ 'transaction.name', 'number', 'description']
+  column_labels = {'transaction.name': 'Transaction Name'}  
+  column_sortable_list = ('transaction.name',)
+  column_searchable_list = ['transaction.name']   
+  form_excluded_columns = ('steps',)
+  page_size = 20
+  def create_form(self, obj=None): 
+    return NewTransactionStepForm() 
+  
+  def update_form(self, obj=None):
+    form = super(NewTransactionStepForm, self).update_form(obj)  
+    return form
+  
+  def scaffold_form(self):
+    form_class = super(TransactionStepAdmin, self).scaffold_form()  
+    del form_class.number
+    del form_class.transaction
+    return form_class
+  
+
+  
 
 admin.add_view(UserAdmin(User, db.session))
 admin.add_view(AnnouncementAdmin(Announcement, db.session))
@@ -225,8 +255,13 @@ admin.add_view(MyModelView(QA, db.session))
 admin.add_view(ClassRequestAdmin(ClassRequest, db.session))
 admin.add_view(MajorSubjectAdmin(MajorSubject, db.session))
 admin.add_view(SupportAdmin(Support, db.session))
+admin.add_view(TransactionAdmin(Transaction, db.session))
+admin.add_view(TransactionStepAdmin(TransactionStep, db.session))
 
 admin.add_link(MenuLink(name='Logout', category='', url="/logout"))
+
+
+
 
 
 ################################################ routes ######################################

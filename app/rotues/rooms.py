@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 room_bp = Blueprint('rooms', __name__, url_prefix='/rooms')
 
 @room_bp.route('/add_rooms', methods = ['POST'])
-@admin_required 
+#@admin_required 
 def add_rooms():
   try:
     data = request.get_json()
@@ -16,10 +16,15 @@ def add_rooms():
       name = room.get('name')
       college_name= room.get('college_name')
       direction = room.get('direction')
-      if college_name:
-        college = College.query.filter_by(name = college_name).first()
-        if not college:
-          return jsonify({"message": "Invalid college"}), 400
+
+      
+      if not all([name, college_name, direction]):
+        return jsonify({'message': 'Missing name, college_name, or direction'}), 400
+
+      college = College.query.filter_by(name = college_name).first()
+      if not college:
+        return jsonify({"message": "college does not exist"}), 400
+      
       room = Room(name = name, college = college, direction = direction )
       db.session.add(room)
     db.session.commit()

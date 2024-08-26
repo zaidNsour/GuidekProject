@@ -13,25 +13,26 @@ def load_user(user_id):
 
 
 class TokenBlocklist(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    jti = db.Column(db.String(36), nullable=False, index=True)
-    # this need modify
-    created_at = db.Column(db.DateTime, nullable=False, default=func.now())
-    expires_at = db.Column(db.DateTime, nullable=False)
+  id = db.Column(db.Integer, primary_key=True)
 
-    def __repr__(self):
-        return f'Token<{self.jti}>'
+  jti = db.Column(db.String(36), nullable=False, index=True)
+  created_at = db.Column(db.DateTime, nullable=False, default=func.now())
+  expires_at = db.Column(db.DateTime, nullable=False)
+
+  def __repr__(self):
+    return f'Token<{self.jti}>'
     
-    def __init__(self, jti, expires_in):
-        self.jti = jti
-        self.created_at = datetime.now()
-        self.expires_at = self.created_at + timedelta(seconds=expires_in)
+  def __init__(self, jti, expires_in):
+    self.jti = jti
+    self.created_at = datetime.now()
+    self.expires_at = self.created_at + timedelta(seconds=expires_in)
 
 
 
 class User(db.Model,UserMixin):
   id = db.Column(db.Integer, primary_key=True)
   major_id = db.Column(db.Integer, db.ForeignKey("major.id"), nullable = False)
+
   email = db.Column(db.String(120), unique=True, nullable=False) 
   number = db.Column(db.String(20), unique=True, nullable=False)
   fullname = db.Column(db.String(80), nullable=False)
@@ -43,11 +44,8 @@ class User(db.Model,UserMixin):
   phone = db.Column(db.String(20), nullable=True)
   img_url = db.Column(db.String(20), nullable=False, default="default_image.jpg")
 
-  #requested_classes = db.relationship('Subject', secondary = 'class_request', backref=db.backref('users', lazy=True))
   class_requests = db.relationship('ClassRequest', back_populates='user')
   requested_classes = db.relationship('ClassRequest', back_populates='user', overlaps="class_requests")
-
-
 
   def __repr__(self):
      return f'User({self.fullname}, {self.number})'
@@ -78,11 +76,14 @@ class User(db.Model,UserMixin):
     return User.query.get(user_id)
   
 
+
 class ClassRequest(db.Model):
   __tablename__ = 'class_request'
   student_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
   subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), primary_key=True)
+
   date_of_request = db.Column(db.DateTime, nullable=False, default= datetime.now)
+  suggested_day = db.Column(db.String(25), nullable=False)
 
   user = db.relationship('User', back_populates='class_requests')
   subject = db.relationship('Subject', back_populates='class_requests')
@@ -103,7 +104,6 @@ class Class(db.Model):
   books = db.Column(db.Text, nullable = True)
   slides = db.Column(db.Text, nullable = True)
   course_plan = db.Column(db.Text, nullable = True)
-
 '''
 
 class Announcement(db.Model):
@@ -126,23 +126,23 @@ class Announcement(db.Model):
 
 class Subject(db.Model):
   id = db.Column(db.Integer, primary_key=True)
+
   name = db.Column(db.String(120),unique=True,nullable=False)
   book = db.Column(db.Text, nullable = True)
   slides = db.Column(db.Text, nullable = True)
   course_plan = db.Column(db.Text, nullable = True)
-  class_requests = db.relationship('ClassRequest', back_populates='subject')
 
+  class_requests = db.relationship('ClassRequest', back_populates='subject')
   major_subjects = db.relationship('MajorSubject', back_populates='subject', overlaps="majors,subjects")
   majors = db.relationship('Major', secondary='major_subject', back_populates='subjects', overlaps="major_subjects")
 
-
-  
   def to_dict(self):
     return {"name": self.name}   
      
   def __repr__(self):
     return f' Subject({self.name})' 
     
+
 
 class Major(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -152,9 +152,11 @@ class Major(db.Model):
   students = db.relationship('User', backref ='major', lazy=True)
   major_subjects = db.relationship('MajorSubject', back_populates='major', overlaps="majors,subjects")
   subjects = db.relationship('Subject', secondary='major_subject', back_populates='majors', overlaps="major_subjects")
+
   def to_dict(self):
     return {"name": self.name, "college_name":self.college.name} 
   
+
 
 # add num_of_hours
 class MajorSubject(db.Model):
@@ -169,7 +171,6 @@ class MajorSubject(db.Model):
   major = db.relationship('Major', back_populates='major_subjects', overlaps="majors,subjects")
   subject = db.relationship('Subject', back_populates='major_subjects', overlaps="majors,subjects")
 
-
   def __repr__(self):
     return f'<MajorSubject {self.major_id}, {self.subject_id}>'
     
@@ -180,6 +181,7 @@ class MajorSubject(db.Model):
             "semester":self.semester
             }
     
+
 
 class Room(db.Model):
    id = db.Column(db.Integer, primary_key=True)
@@ -192,8 +194,10 @@ class Room(db.Model):
     return {"name": self.name,"college_name": self.college.name, "direction": self.direction}
 
 
+
 class College(db.Model):
   id = db.Column(db.Integer, primary_key=True)
+  
   name = db.Column(db.String(80), unique=True, nullable = False)
   location = db.Column(db.String(120), nullable = False)
 
@@ -203,11 +207,13 @@ class College(db.Model):
 
 class QA(db.Model):
    id = db.Column(db.Integer, primary_key=True)
+
    question = db.Column(db.String(120), nullable=False)
    answer = db.Column(db.String(120), nullable=False)
 
    def to_dict(self):
     return {"question": self.question,"answer": self.answer}
+
 
 
 class Transaction(db.Model):
@@ -218,8 +224,10 @@ class Transaction(db.Model):
    expected_time = db.Column(db.Integer, nullable=False)
 
    steps = db.relationship('TransactionStep', backref=db.backref('transaction', lazy=True))
+
    def to_dict(self):
     return {"name": self.name,"fee": self.fee, "expected_time":self.expected_time}
+
 
 
 class TransactionStep(db.Model):
@@ -243,8 +251,11 @@ class TransactionStep(db.Model):
      return new_step
    '''
 
+
+
 class Support(db.Model):
   id = db.Column(db.Integer, primary_key=True)
+
   user_email = db.Column(db.String(80), nullable = False )
   issue = db.Column(db.String(80), nullable = False )
   title = db.Column( db.String(80), nullable = False )

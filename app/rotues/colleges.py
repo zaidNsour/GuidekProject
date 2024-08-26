@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 college_bp = Blueprint('colleges', __name__, url_prefix='/colleges')
 
 @college_bp.route('/add_colleges', methods = ['POST'])
-#@admin_required
+@admin_required
 def add_colleges():
   try:   
     data = request.get_json()
@@ -22,12 +22,10 @@ def add_colleges():
 
     return jsonify({"message": "colleges added successfully"}), 201
   
-
   except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({'message': 'Database error occurred while adding the colleges', 'error': str(e)}), 500
   
-    
   except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'An error occurred while adding the colleges', 'error': str(e)}), 500

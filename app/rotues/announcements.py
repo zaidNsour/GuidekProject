@@ -21,7 +21,7 @@ announ_bp = Blueprint('announcements', __name__, url_prefix='/announcements')
 
 
 @announ_bp.route('/add_announcement', methods = ['POST'])
-#@admin_required
+@admin_required
 def add_announcement():
   try:
     json_data = request.form.get('json_data')
@@ -87,8 +87,6 @@ def all_image_name():
   
   except Exception as e:
     return jsonify({'message': 'An error occurred while retrieving the announcement', 'error': str(e)}), 500
-
-
 
 
 

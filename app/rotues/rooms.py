@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 room_bp = Blueprint('rooms', __name__, url_prefix='/rooms')
 
 @room_bp.route('/add_rooms', methods = ['POST'])
-#@admin_required 
+@admin_required 
 def add_rooms():
   try:
     data = request.get_json()

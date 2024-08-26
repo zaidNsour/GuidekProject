@@ -46,9 +46,10 @@ def get_picture(path, filename):
       '.webp': 'image/webp',
       '.ico': 'image/x-icon'
     }
+    
     _, picture_ext = os.path.splitext(filename)
-    # Get the mimetype based on the extension
     mime_type = extension_to_mime.get(picture_ext)
+
     if mime_type:    
       return send_file(picture_path, mimetype = mime_type)
     else:

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app import db
-from app.models import College, Major, MajorSubject, Subject
+from app.models import Major, MajorSubject, Subject
 from flask_jwt_extended import jwt_required
 from app.decorators import admin_required
 from sqlalchemy.exc import SQLAlchemyError
@@ -72,7 +72,6 @@ def subject_resources(subject_name):
                     "slides":subject.slides,
                     "course_plan":subject.course_plan
                     }}), 200
-  
   
   except SQLAlchemyError as e:
         return jsonify({'message': 'Database error occurred while retrieving the resources', 'error': str(e)}), 500

@@ -23,13 +23,6 @@ def current_user_info():
   return jsonify(user.to_dict()), 200  
 
 
-@user_bp.route('/all_users', methods = ['GET'])
-def all_users():
-  users = User.query.all()
-  users_list = [user.to_dict() for user in users]
-  
-  return jsonify({"users": users_list}), 200
-
 
 @user_bp.route("/reset_password_request", methods=['POST'])
 def reset_request():
@@ -87,51 +80,59 @@ def get_image(filename):
 @user_bp.route("/update_user_info", methods=["PUT"])
 @jwt_required()
 def update_user_info():
-  email = get_jwt_identity()
-  user = User.query.filter_by(email = email).first()
-  json_data = request.form.get('json_data')
-  data = {}
-  if json_data:
-    data = json.loads(json_data)
+  try:
+    email = get_jwt_identity()
+    user = User.query.filter_by(email = email).first()
+    json_data = request.form.get('json_data')
+    data = {}
+    if json_data:
+      data = json.loads(json_data)
+    
+    
+    image_file = request.files.get('image')
+    fullname = data.get('fullname')
+    number = data.get('number')
+    phone = data.get('phone')
+    major_name = data.get('major_name')
+
+    if image_file:
+      picture_name = upload_picture( image_file, 'app/static/images/user-images/', (250,250) ) 
+      if picture_name == 'unsupported':
+        return jsonify({"error": "Unsupported image type"}), 400
+      #modify this after modify data base
+      if user.img_url != 'default_image.jpg':
+        delete_picture('app/static/images/user-images/', user.img_url)
+      user.img_url = picture_name
+
+    if fullname:
+      if not validate_fullname(fullname):
+        return jsonify({'message': 'Invalid fullname'}), 400
+      user.fullname = fullname
+
+    if number:
+      if not validate_number(number):
+        return jsonify({'message': 'Invalid student number'}), 400
+      user.number = number
+
+    if phone:
+      if not validate_phone(phone):
+        return jsonify({'message': 'Invalid phone number'}), 400
+      user.phone = phone
+
+    if major_name:
+      major = Major.query.filter_by(name = major_name).first()
+      if major:
+        user.major = major
+
+    db.session.commit()
+    return jsonify({'message': 'User Profile updated successfully.'}), 200
   
+  except SQLAlchemyError as e:
+    db.session.rollback()
+    return jsonify({'message': 'Database error occurred while update the user info', 'error': str(e)}), 500
   
-  image_file = request.files.get('image')
-  fullname = data.get('fullname')
-  number = data.get('number')
-  phone = data.get('phone')
-  major_name = data.get('major_name')
-
-  if image_file:
-    picture_name = upload_picture( image_file, 'app/static/images/user-images/', (250,250) ) 
-    if picture_name == 'unsupported':
-      return jsonify({"error": "Unsupported image type"}), 400
-     #modify this after modify data base
-    if user.img_url != 'default_image.jpg':
-      delete_picture('app/static/images/user-images/', user.img_url)
-    user.img_url = picture_name
-
-  if fullname:
-    if not validate_fullname(fullname):
-      return jsonify({'message': 'Invalid fullname'}), 400
-    user.fullname = fullname
-
-  if number:
-    if not validate_number(number):
-      return jsonify({'message': 'Invalid student number'}), 400
-    user.number = number
-
-  if phone:
-    if not validate_phone(phone):
-      return jsonify({'message': 'Invalid phone number'}), 400
-    user.phone = phone
-
-  if major_name:
-    major = Major.query.filter_by(name = major_name).first()
-    if major:
-      user.major = major
-
-  db.session.commit()
-  return jsonify({'message': 'User Profile updated successfully.'}), 200
+  except Exception as e:
+    return jsonify({'message': 'An error occurred while update the user info', 'error': str(e)}), 500
 
 
 

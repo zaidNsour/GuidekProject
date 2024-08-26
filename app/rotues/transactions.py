@@ -9,7 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
 transaction_bp = Blueprint('transactions', __name__, url_prefix='/transactions')
 
 @transaction_bp.route('/add_transactions', methods = ['POST'])
-#@admin_required 
+@admin_required 
 def add_transactions():
   try:
     data = request.get_json()
@@ -54,7 +54,7 @@ def add_transactions():
 
 
 @transaction_bp.route('/add_transaction', methods = ['POST'])
-#@admin_required 
+@admin_required 
 def add_transaction():
   try:
     data = request.get_json()
@@ -98,7 +98,7 @@ def add_transaction():
 
 
 @transaction_bp.route('/all_transactions', methods = ['GET'])
-#@jwt_required() 
+@jwt_required() 
 def transactions():
   try:
     transactions = Transaction.query.all()
@@ -114,6 +114,7 @@ def transactions():
   
 
 @transaction_bp.route('/transaction_steps/<string:transaction_name>', methods=['GET'])
+@jwt_required() 
 def transaction_steps(transaction_name):
   try:
     transaction = Transaction.query.filter_by(name= transaction_name).first()

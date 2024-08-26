@@ -30,13 +30,13 @@ def add_majors():
         db.session.rollback()
         return jsonify({'message': 'Database error occurred while adding the transaction', 'error': str(e)}), 500
   
-    
   except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'An error occurred while adding the transaction', 'error': str(e)}), 500
   
   
 @major_bp.route('/all_majors', methods = ['GET'])
+@jwt_required() 
 def all_subjects():
   try:
     majors = Major.query.all()

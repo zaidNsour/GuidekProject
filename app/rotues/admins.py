@@ -165,7 +165,7 @@ class RoomAdmin(MyModelView):
 ############################## Class Request ################################ 
 
 class ClassRequestAdmin(MyModelView):
-  column_list = ['user.fullname', 'user.number', 'subject.name', 'suggested_day', 'date_of_request']
+  column_list = ['user.fullname', 'user.number', 'subject.name', 'suggested_days', 'date_of_request']
   column_searchable_list = ['user.fullname', 'user.number', 'subject.name']
   column_sortable_list = ['subject.name']
   column_labels = {

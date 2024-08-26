@@ -83,7 +83,7 @@ class ClassRequest(db.Model):
   subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), primary_key=True)
 
   date_of_request = db.Column(db.DateTime, nullable=False, default= datetime.now)
-  suggested_day = db.Column(db.String(25), nullable=False)
+  suggested_days = db.Column(db.String(25), nullable=False)
 
   user = db.relationship('User', back_populates='class_requests')
   subject = db.relationship('Subject', back_populates='class_requests')

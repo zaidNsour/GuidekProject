@@ -16,9 +16,13 @@ def request_class():
     user = User.query.filter_by(email = email).first()
     data = request.get_json()
     subject_name = data.get('subject_name')
+    suggested_days = data.get('suggested_days')
 
     if not subject_name:
       return jsonify({'message': 'Missing Subject name.'}), 400
+    
+    if not suggested_days:
+      return jsonify({'message': 'Missing suggested days.'}), 400
 
     subject = Subject.query.filter_by(name = subject_name).first()
     if not subject:
@@ -28,7 +32,7 @@ def request_class():
     if class_request:
       return jsonify({"message": "request already exist."}), 400
     
-    class_request = ClassRequest(student_id = user.id, subject_id = subject.id)
+    class_request = ClassRequest(student_id = user.id, subject_id = subject.id, suggested_days= suggested_days)
     db.session.add(class_request)
     db.session.commit()
 

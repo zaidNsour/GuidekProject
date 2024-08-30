@@ -217,16 +217,16 @@ class QA(db.Model):
 
 
 class Transaction(db.Model):
-   id = db.Column(db.Integer, primary_key=True)
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String(80), unique=True, nullable=False)
+  fee = db.Column(db.Float, nullable=False)
+  expected_time = db.Column(db.Integer, nullable=False)
 
-   name = db.Column(db.String(80), unique=True, nullable = False)
-   fee = db.Column(db.Float, nullable=False)
-   expected_time = db.Column(db.Integer, nullable=False)
+  steps = db.relationship('TransactionStep', backref=db.backref('transaction', lazy=True),
+                           cascade="all, delete-orphan")
 
-   steps = db.relationship('TransactionStep', backref=db.backref('transaction', lazy=True))
-
-   def to_dict(self):
-    return {"name": self.name,"fee": self.fee, "expected_time":self.expected_time}
+  def to_dict(self):
+    return {"name": self.name, "fee": self.fee, "expected_time": self.expected_time}
 
 
 

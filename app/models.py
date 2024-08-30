@@ -82,7 +82,7 @@ class ClassRequest(db.Model):
   student_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
   subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), primary_key=True)
 
-  date_of_request = db.Column(db.DateTime, nullable=False, default= datetime.now)
+  date_of_request = db.Column(db.DateTime, nullable=False, default= datetime.now + 3)
   suggested_days = db.Column(db.String(25), nullable=False)
 
   user = db.relationship('User', back_populates='class_requests')
@@ -111,7 +111,7 @@ class Announcement(db.Model):
 
   title = db.Column(db.String(120), nullable=False)
   content = db.Column(db.Text, nullable=False)
-  date_posted = db.Column(db.DateTime, nullable=False, default=datetime.now)
+  date_posted = db.Column(db.DateTime, nullable=False, default=datetime.now + 3)
   img_url = db.Column(db.String(20), nullable=False, default="default_image.jpg")
 
   def to_dict(self):
@@ -199,10 +199,10 @@ class College(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   
   name = db.Column(db.String(80), unique=True, nullable = False)
-  location = db.Column(db.String(120), nullable = False)
+  location = db.Column(db.String(120), nullable = False, cascade="all, delete-orphan")
 
   majors = db.relationship('Major', backref=db.backref('college', lazy=True))
-  rooms = db.relationship('Room', backref=db.backref('college', lazy=True))
+  rooms = db.relationship('Room', backref=db.backref('college', lazy=True), cascade="all, delete-orphan")
 
 
 class QA(db.Model):

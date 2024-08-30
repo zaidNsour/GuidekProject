@@ -40,8 +40,8 @@ class UserAdmin(MyModelView):
   column_labels = {"major.name":"Major"}
   form_extra_fields = {
         'file_path': FileUploadField('Profile image',
-                                      base_path='/path/to/upload',
-                                      allowed_extensions=['jpg', 'png']),
+                                      base_path='/tmp/uploads',
+                                      allowed_extensions=['jpg', 'png', 'JPG', 'PNG']),
         'password2': PasswordField('Password')
                       }
 

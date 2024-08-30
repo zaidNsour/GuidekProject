@@ -82,7 +82,7 @@ class ClassRequest(db.Model):
   student_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
   subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), primary_key=True)
 
-  date_of_request = db.Column(db.DateTime, nullable=False, default= datetime.now + timedelta(hours=3))
+  date_of_request = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now() + timedelta(hours=3))
   suggested_days = db.Column(db.String(25), nullable=False)
 
   user = db.relationship('User', back_populates='class_requests')
@@ -111,7 +111,7 @@ class Announcement(db.Model):
 
   title = db.Column(db.String(120), nullable=False)
   content = db.Column(db.Text, nullable=False)
-  date_posted = db.Column(db.DateTime, nullable=False, default=datetime.now + timedelta(hours= 3))
+  date_posted = db.Column(db.DateTime, nullable=False, default=datetime.now)
   img_url = db.Column(db.String(20), nullable=False, default="default_image.jpg")
 
   def to_dict(self):

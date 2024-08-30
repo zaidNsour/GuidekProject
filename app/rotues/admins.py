@@ -98,8 +98,8 @@ class AnnouncementAdmin(MyModelView):
   page_size = 10
   form_extra_fields = {
     'file_path': FileUploadField('Announcement image',
-                                 base_path='/path/to/upload',
-                                 allowed_extensions=['jpg', 'png']) 
+                                 base_path='/tmp/uploads',
+                                 allowed_extensions=['jpg', 'png', 'JPG','PNG']) 
                       }
   
   def on_model_change(self, form, model, is_created):

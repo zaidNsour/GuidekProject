@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+.venv/
+.env
+
+# VS Code directory
+.vscode/
+
+# Instance folder (used for configuration files, secrets, etc.)
+instance/
+
+# Migrations
+migrations/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Python environment files
+*.env
+*.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Flask specific
+*.log

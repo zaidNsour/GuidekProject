@@ -13,11 +13,7 @@ __pycache__/
 # VS Code directory
 .vscode/
 
-# Instance folder (used for configuration files, secrets, etc.)
-instance/
 
-# Migrations
-migrations/
 
 # System files
 .DS_Store

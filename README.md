@@ -21,7 +21,9 @@ Students can also contact admins directly for support, making it an essential to
 - **View Common Questions and Answers (FAQ)**: Provides answers to frequently asked questions about academic and administrative processes.
 
 - **Access Slides and Syllabus**: Students can access lecture slides and course syllabi, ensuring they have all the necessary materials for their courses.
-- 
+  
+- **Course Suggestions**: Recommends courses to students based on their major and current academic status.
+  
 - **View Class Location**: Integrates with GPS to help students find classrooms within the university campus.
 
 ### For Admins
@@ -29,7 +31,7 @@ Students can also contact admins directly for support, making it an essential to
 - **Manage Announcements**: Admins can create, update, and delete announcements for students.
 
 - **Manage Class Requests**: Admins can approve, deny, or update the status of student class requests.
-- 
+  
 - **Access Admin Dashboard**: Provides admins with access to a comprehensive dashboard where they can manage users, and other administrative functions.
 
 ## Tech Stack
@@ -38,10 +40,6 @@ Students can also contact admins directly for support, making it an essential to
 - Frontend: Flutter (for the mobile app)
 - Database: SQLite
 - Authentication: JWT (JSON Web Token)
--Other Technologies:
-  -- Google Maps API (for GPS navigation)
-  -- RESTful API principles
-
 
 ## Prerequisites
 To run this project, you will need:

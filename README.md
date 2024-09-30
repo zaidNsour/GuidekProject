@@ -9,22 +9,22 @@ Students can also contact admins directly for support, making it an essential to
 ### For Students
 
 - **View Announcements**: Allows students to access important announcements related to academic and campus activities.
+  
+- **Control Personal Profile**: Students can manage and update their personal information, such as contact details, within their profile.
 
 - **Request New Classes**: tudents can request to enroll in new classes. The app displays the status of these requests, whether approved or pending.
 
-- **Control Personal Profile**: Students can manage and update their personal information, such as contact details, within their profile.
-
-- **Contact Admin**: Allows students to communicate directly with the admin for assistance or inquiries.
-
 - **Use Transaction Guide**: Guides students through various university procedures, such as course registration, dropping classes, and applying for financial aid.
-
-- **View Common Questions and Answers (FAQ)**: Provides answers to frequently asked questions about academic and administrative processes.
 
 - **Access Slides and Syllabus**: Students can access lecture slides and course syllabi, ensuring they have all the necessary materials for their courses.
   
 - **Course Suggestions**: Recommends courses to students based on their major and current academic status.
   
 - **View Class Location**: Integrates with GPS to help students find classrooms within the university campus.
+
+- **View Common Questions and Answers (FAQ)**: Provides answers to frequently asked questions about academic and administrative processes.
+
+- **Contact Admin**: Allows students to communicate directly with the admin for assistance or inquiries.
 
 ### For Admins
 

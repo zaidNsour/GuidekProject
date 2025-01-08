@@ -195,7 +195,6 @@ class MajorSubjectAdmin(MyModelView):
     return NewMajorSubjectForm() 
   
   def update_form(self, obj=None):
-        
     form = super(MajorSubjectAdmin, self).update_form(obj)  
     form.major.name.render_kw = {'readonly': True}
     form.subject.name.render_kw = {'readonly': True}  
